@@ -7,6 +7,8 @@
 #' @export
 #'
 #' @examples
+#' data(greece)
+#' m <- site_species(greece)
 site_species <- function(data, sparse = TRUE) {
   sites <- factor(data[[1]])
   species <- factor(data[[2]])

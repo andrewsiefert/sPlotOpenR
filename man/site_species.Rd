@@ -17,3 +17,7 @@ If \code{sparse = TRUE} a sparse matrix, otherwise a matrix.
 \description{
 Create site-by-species matrix
 }
+\examples{
+data(greece)
+m <- site_species(greece)
+}
