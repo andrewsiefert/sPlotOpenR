@@ -1,12 +1,14 @@
 Package: sPlotOpenR
-Title: What the Package Does (One Line, Title Case)
+Title: Work with the sPlotOpen Vegetation Plot Database 
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Andrew", "Siefert", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Functions to make it easier to load, process, and visualize vegetation plot data in the sPlotOpen database.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports: 
+    readr,
+    stringr

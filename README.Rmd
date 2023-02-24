@@ -1,0 +1,40 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# sPlotOpenR
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of sPlotOpenR is to make it easier to acquire, process, and visualize data from the sPlotOpen global vegetation dataset.
+
+## Installation
+
+You can install the development version of sPlotOpenR like so:
+
+``` r
+devtools::install_github("andrewsiefert/sPlotOpenR")
+```
+
+## Example
+
+```{r example, eval = FALSE}
+library(sPlotOpenR)
+
+# download sPlotOpen dataset and load into R
+data <- get_sPlot(load = T)
+
+```
+

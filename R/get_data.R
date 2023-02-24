@@ -1,10 +1,19 @@
+#' Download sPlotOpen data and load into R
+#'
+#' @param dir character; Directory where sPlotOpen data will be saved after download. If NULL, data will not be saved on disk and only loaded into the R environment.
+#' @param load logical; Should the data be loaded immediately into R?
+#'
+#' @return If `load = TRUE`, returns a list containing sPlotOpen data tables.
+#' @export
+#'
+#' @examples
 get_sPlot <- function(dir = NULL, load = TRUE) {
 
   options(timeout = 3600)
 
   # create directory
   if (!is.null(dir)) {
-    if (str_sub(dir, -1) != "/") {
+    if (stringr::str_sub(dir, -1) != "/") {
       dir <- paste(dir, "/", sep = "")
     }
     if (!dir.exists(dir)) {
@@ -27,14 +36,14 @@ get_sPlot <- function(dir = NULL, load = TRUE) {
   if (!is.null(dir)) {
 
     # extract to directory
-    unzip(temp, exdir = str_sub(dir, 1, -2))
+    unzip(temp, exdir = stringr::str_sub(dir, 1, -2))
     unlink(temp)
 
     # load data
     if(load) {
-      data <- list(plots = read.delim(paste0(dir, "sPlotOpen_DT(1).txt")),
-                   comp = read.delim(paste0(dir, "sPlotOpen_header(2).txt")),
-                   traits = read.delim(paste0(dir, "sPlotOpen_CWM_CWV(1).txt")))
+      data <- list(plots = readr::read_tsv(paste0(dir, "sPlotOpen_DT(1).txt")),
+                   comp = readr::read_tsv(paste0(dir, "sPlotOpen_header(2).txt")),
+                   traits = readr::read_tsv(paste0(dir, "sPlotOpen_CWM_CWV(1).txt")))
       return(data)
     }
 
@@ -46,9 +55,9 @@ get_sPlot <- function(dir = NULL, load = TRUE) {
     unlink(temp)
 
     # load data
-    data <- list(plots = read.delim(paste0(tempDir, "/sPlotOpen_DT(1).txt")),
-                 comp = read.delim(paste0(tempDir, "/sPlotOpen_header(2).txt")),
-                 traits = read.delim(paste0(tempDir, "/sPlotOpen_CWM_CWV(1).txt")))
+    data <- list(comp = readr::read_tsv(paste0(tempDir, "/sPlotOpen_DT(1).txt")),
+                 plots = readr::read_tsv(paste0(tempDir, "/sPlotOpen_header(2).txt")),
+                 traits = readr::read_tsv(paste0(tempDir, "/sPlotOpen_CWM_CWV(1).txt")))
     return(data)
 
     # delete temporary directory
@@ -57,10 +66,18 @@ get_sPlot <- function(dir = NULL, load = TRUE) {
 }
 
 
+#' Load sPlotOpen data into R
+#'
+#' @param dir Directory where sPlotOpen tables are stored.
+#'
+#' @return List containing sPlotOpen data tables.
+#' @export
+#'
+#' @examples
 read_sPlot <- function(dir) {
-  data <- list(plots = read.delim(paste0(dir, "sPlotOpen_DT(1).txt")),
-               comp = read.delim(paste0(dir, "sPlotOpen_header(2).txt")),
-               traits = read.delim(paste0(dir, "sPlotOpen_CWM_CWV(1).txt")))
+  data <- list(comp = readr::read_tsv(paste0(dir, "/sPlotOpen_DT(1).txt")),
+               plots = readr::read_tsv(paste0(dir, "/sPlotOpen_header(2).txt")),
+               traits = readr::read_tsv(paste0(dir, "/sPlotOpen_CWM_CWV(1).txt")))
   return(data)
 }
 
