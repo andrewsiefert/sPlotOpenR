@@ -1,13 +1,28 @@
 #' Download sPlotOpen data and load into R
 #'
-#' @param dir character; Directory where sPlotOpen data will be saved after download. If NULL, data will not be saved on disk and only loaded into the R environment.
-#' @param load logical; Should the data be loaded immediately into R?
+#' `get_sPlot()` downloads sPlotOpen data from the iDiv Data Repository and
+#' saves the downloaded tables to a local directory and/or loads them into R.
 #'
-#' @return If `load = TRUE`, returns a list containing sPlotOpen data tables.
+#' @param dir Directory where sPlotOpen data will be saved after download. If
+#'   `NULL`, data will not be saved on disk and only loaded into the R
+#'   environment.
+#' @param load If `TRUE` (the default), data will be loaded immediately into R.
+#' @param tables A character vector. Names of tables to be downloaded. Options
+#'   are (default is to download all):
+#'  * `"plots"`: plot-level information.
+#'  * `"comp"`: data on species composition of each plot in long format.
+#'  * `"traits"`: community-weighted means and variances for 18 traits.
+#' @param metadata If `TRUE` (the default), metadata will be downloaded.
+#'
+#' @return If `load = TRUE`, returns a named list containing the downloaded
+#'   tables, each as a [`tibble()`].
 #' @export
 #'
 #' @examples
-get_sPlot <- function(dir = NULL, load = TRUE) {
+get_sPlot <- function(dir = "~/sPlotOpen/data",
+                      tables = c("plots", "comp", "traits"),
+                      metadata = TRUE,
+                      load = TRUE) {
 
   options(timeout = 3600)
 
@@ -17,7 +32,7 @@ get_sPlot <- function(dir = NULL, load = TRUE) {
       dir <- paste(dir, "/", sep = "")
     }
     if (!dir.exists(dir)) {
-      dir.create(dir)
+      dir.create(dir, recursive = T)
       message(paste("Creating directory:", dir))
     }
     message(paste0("Saving to ", dir))
@@ -74,7 +89,7 @@ get_sPlot <- function(dir = NULL, load = TRUE) {
 #' @export
 #'
 #' @examples
-read_sPlot <- function(dir) {
+read_sPlot <- function(dir = "~/sPlotOpen/data") {
   data <- list(comp = readr::read_tsv(paste0(dir, "/sPlotOpen_DT(1).txt")),
                plots = readr::read_tsv(paste0(dir, "/sPlotOpen_header(2).txt")),
                traits = readr::read_tsv(paste0(dir, "/sPlotOpen_CWM_CWV(1).txt")))

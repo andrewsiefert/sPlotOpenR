@@ -4,16 +4,35 @@
 \alias{get_sPlot}
 \title{Download sPlotOpen data and load into R}
 \usage{
-get_sPlot(dir = NULL, load = TRUE)
+get_sPlot(
+  dir = "~/sPlotOpen/data",
+  tables = c("plots", "comp", "traits"),
+  metadata = TRUE,
+  load = TRUE
+)
 }
 \arguments{
-\item{dir}{character; Directory where sPlotOpen data will be saved after download. If NULL, data will not be saved on disk and only loaded into the R environment.}
+\item{dir}{Directory where sPlotOpen data will be saved after download. If
+\code{NULL}, data will not be saved on disk and only loaded into the R
+environment.}
 
-\item{load}{logical; Should the data be loaded immediately into R?}
+\item{tables}{A character vector. Names of tables to be downloaded. Options
+are (default is to download all):
+\itemize{
+\item \code{"plots"}: plot-level information.
+\item \code{"comp"}: data on species composition of each plot in long format.
+\item \code{"traits"}: community-weighted means and variances for 18 traits.
+}}
+
+\item{metadata}{If \code{TRUE} (the default), metadata will be downloaded.}
+
+\item{load}{If \code{TRUE} (the default), data will be loaded immediately into R.}
 }
 \value{
-If \code{load = TRUE}, returns a list containing sPlotOpen data tables.
+If \code{load = TRUE}, returns a named list containing the downloaded
+tables, each as a \code{\link[=tibble]{tibble()}}.
 }
 \description{
-Download sPlotOpen data and load into R
+\code{get_sPlot()} downloads sPlotOpen data from the iDiv Data Repository and
+saves the downloaded tables to a local directory and/or loads them into R.
 }

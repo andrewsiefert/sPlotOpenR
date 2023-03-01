@@ -4,7 +4,7 @@
 \alias{read_sPlot}
 \title{Load sPlotOpen data into R}
 \usage{
-read_sPlot(dir)
+read_sPlot(dir = "~/sPlotOpen/data")
 }
 \arguments{
 \item{dir}{Directory where sPlotOpen tables are stored.}
