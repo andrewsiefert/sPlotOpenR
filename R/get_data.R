@@ -19,11 +19,16 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Download all sPlot tables, load into R, and save to local directory
+#' db <- get_sPlot(dir = tempdir())
+#' }
 get_sPlot <- function(dir = "~/sPlotOpen/data",
                       tables = c("plots", "comp", "traits"),
                       metadata = TRUE,
                       load = TRUE) {
 
+  op <- options()
   options(timeout = 3600)
 
   # create directory
@@ -78,18 +83,35 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     # delete temporary directory
     unlink(tempDir, recursive = T)
   }
+
+  # reset initial options
+  options(op)
 }
 
 
 #' Load sPlotOpen data into R
 #'
-#' @param dir Directory where sPlotOpen tables are stored.
+#' `read_sPlot()` searches for sPlotOpen data tables in the directory you
+#' specify and, if present, loads them into R.
 #'
-#' @return List containing sPlotOpen data tables.
+#' @param dir Directory where sPlotOpen tables are stored.
+#' @param tables A character vector. Names of tables to load. Options are
+#'   (default is to load all):
+#'  * `"plots"`: plot-level information.
+#'  * `"comp"`: data on species composition of each plot in long format.
+#'  * `"traits"`: community-weighted means and variances for 18 traits.
+#' @param metadata If `TRUE` (the default), metadata will be loaded
+#'
+#' @return List containing sPlotOpen data tables, each as a [`tibble()`].
 #' @export
 #'
 #' @examples
-read_sPlot <- function(dir = "~/sPlotOpen/data") {
+#' \dontrun{
+#' # Download all sPlot tables, load into R, and save to local directory
+#' db <- get_sPlot(dir = tempdir())
+#' }
+read_sPlot <- function(dir = "~/sPlotOpen/data",
+                       tables = c("plots", "comp", "traits")) {
   data <- list(comp = readr::read_tsv(paste0(dir, "/sPlotOpen_DT(1).txt")),
                plots = readr::read_tsv(paste0(dir, "/sPlotOpen_header(2).txt")),
                traits = readr::read_tsv(paste0(dir, "/sPlotOpen_CWM_CWV(1).txt")))

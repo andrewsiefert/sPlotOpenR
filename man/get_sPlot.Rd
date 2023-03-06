@@ -36,3 +36,9 @@ tables, each as a \code{\link[=tibble]{tibble()}}.
 \code{get_sPlot()} downloads sPlotOpen data from the iDiv Data Repository and
 saves the downloaded tables to a local directory and/or loads them into R.
 }
+\examples{
+\dontrun{
+# Download all sPlot tables, load into R, and save to local directory
+  db <- get_sPlot(dir = tempdir())
+}
+}
