@@ -1,23 +1,26 @@
 #' Create a Site-by-Species Matrix
 #'
-#' @param data A data frame containing site names in the first column, species names in the second column, and, optionally, abundance data in the third column.
-#' @param sparse Whether to return a sparse matrix.
+#' @param data sPlotOpen species composition data in long format.
+#' @param sparse Whether to return a sparse matrix (default is `FALSE`).
+#' @param pres_abs Whether to convert species relative cover data to
+#'   presence-absence (default is `FALSE`).
 #'
-#' @return If `sparse = TRUE` a sparse matrix, otherwise a matrix.
+#' @return A matrix (sites as rows, species as columns) of species relative
+#'   cover or presence-absence.
 #' @export
 #'
 #' @examples
 #' data(greece)
 #'
-#' comp <- greece$DT[,c('PlotObservationID', 'Species', 'Relative_cover')]
-#' m <- site_species(comp)
-site_species <- function(data, sparse = FALSE) {
-  sites <- factor(data[[1]])
-  species <- factor(data[[2]])
-  if(ncol(data)==3) {
-    x <- data[[3]]
-  } else {
+#' comp <- greece$DT
+#' m <- site_by_species(comp)
+site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
+  sites <- factor(data$PlotObservationID)
+  species <- factor(data$Species)
+  if(isTRUE(pres_abs)) {
     x <- 1
+  } else {
+    x <- data$Relative_cover
   }
 
   s <- Matrix::sparseMatrix(
