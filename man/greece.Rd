@@ -5,11 +5,10 @@
 \alias{greece}
 \title{Greece forests composition data}
 \format{
-A data frame with 385 rows and 3 columns:
+A list containing:
 \itemize{
-\item PlotObservationID
-\item Species
-\item Abundance
+\item \code{DT}, a data frame with species composition data in long format (385 rows x 6 columns)
+\item \code{header}, a data frame with plot-level information (17 rows x 47 columns)
 }
 }
 \usage{

@@ -4,7 +4,7 @@
 \alias{site_species}
 \title{Create site-by-species matrix}
 \usage{
-site_species(data, sparse = TRUE)
+site_species(data, sparse = FALSE)
 }
 \arguments{
 \item{data}{A data frame containing site names in the first column, species names in the second column, and, optionally, abundance data in the third column.}
@@ -19,5 +19,7 @@ Create site-by-species matrix
 }
 \examples{
 data(greece)
-m <- site_species(greece)
+
+comp <- greece$DT[,c('PlotObservationID', 'Species', 'Relative_cover')]
+m <- site_species(comp)
 }

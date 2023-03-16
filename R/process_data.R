@@ -8,8 +8,10 @@
 #'
 #' @examples
 #' data(greece)
-#' m <- site_species(greece)
-site_species <- function(data, sparse = TRUE) {
+#'
+#' comp <- greece$DT[,c('PlotObservationID', 'Species', 'Relative_cover')]
+#' m <- site_species(comp)
+site_species <- function(data, sparse = FALSE) {
   sites <- factor(data[[1]])
   species <- factor(data[[2]])
   if(ncol(data)==3) {
@@ -31,3 +33,42 @@ site_species <- function(data, sparse = TRUE) {
   }
 
 }
+
+
+#' Filter sPlotOpen Data by Species
+#'
+#' `filter_species()` finds all vegetation plots that contain at least one
+#' species in a list you provide.
+#'
+#' @param data sPlotOpen data, a named list containing `DT` (species composition
+#'   data in long format) and `header` (plot-level information).
+#' @param spp_list A vector of species names.
+#' @param join Whether to join the filtered `DT` and `header` tables.
+#'
+#' @return sPlotOpen data filtered to include only plots that contain at least
+#'   one species in `spp_list`. If `join = F`, a list containing the filtered
+#'   `DT` and `header` tables. If `join = T`, a single data from containing the
+#'   joined tables.
+#'
+#' @export
+#'
+#' @examples
+#' data(greece)
+#'
+#' spp <- c("Silene atropurpurea", "Corylus avellana")
+#' greece_filtered <- filter_species(greece, spp, join = FALSE)
+filter_species <- function(data, spp_list, join = FALSE) {
+
+  spp_filtered <- dplyr::filter(data$DT, Species %in% spp_list)
+  plots_w_spp <- dplyr::distinct(spp_filtered, PlotObservationID)
+
+  header_filtered <- dplyr::inner_join(data$header, plots_w_spp)
+  DT_filtered <- dplyr::semi_join(data$DT, header_filtered)
+
+  if(isTRUE(join)) {
+    return(dplyr::inner_join(DT_filtered, header_filtered))
+  } else {
+    return(list(DT = DT_filtered, header = header_filtered))
+  }
+}
+
