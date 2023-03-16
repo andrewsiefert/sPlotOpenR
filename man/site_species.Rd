@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_data.R
 \name{site_species}
 \alias{site_species}
-\title{Create site-by-species matrix}
+\title{Create a Site-by-Species Matrix}
 \usage{
 site_species(data, sparse = FALSE)
 }
@@ -15,7 +15,7 @@ site_species(data, sparse = FALSE)
 If \code{sparse = TRUE} a sparse matrix, otherwise a matrix.
 }
 \description{
-Create site-by-species matrix
+Create a Site-by-Species Matrix
 }
 \examples{
 data(greece)
