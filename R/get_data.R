@@ -9,13 +9,13 @@
 #' @param load If `TRUE` (the default), data will be loaded immediately into R.
 #' @param tables A character vector. Names of tables to be downloaded. Options
 #'   are (default is to download all):
-#'  * `"plots"`: plot-level information.
-#'  * `"comp"`: data on species composition of each plot in long format.
-#'  * `"traits"`: community-weighted means and variances for 18 traits.
+#'  * `"header"`: plot-level information.
+#'  * `"DT"`: a list of species and relative cover in each vegetation plot.
+#'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #' @param metadata If `TRUE` (the default), metadata will be downloaded.
 #'
 #' @return If `load = TRUE`, returns a named list containing the downloaded
-#'   tables, each as a [`tibble()`].
+#'   tables as tibbles.
 #' @export
 #'
 #' @examples
@@ -24,12 +24,14 @@
 #' db <- get_sPlot(dir = tempdir())
 #' }
 get_sPlot <- function(dir = "~/sPlotOpen/data",
-                      tables = c("plots", "comp", "traits"),
+                      tables = c("header", "DT", "CWM_CWV"),
                       metadata = TRUE,
                       load = TRUE) {
 
   op <- options()
   options(timeout = 3600)
+
+  if(any(c("DT", "header", "CWM_CWV") %in% tables) == F) stop("tables must include at least one of 'DT', 'header', 'CWM_CWV'")
 
   # create directory
   if (!is.null(dir)) {
@@ -48,22 +50,38 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     stop("Must specify a directory (\"dir\") to save data when \"load = FALSE\".")
   }
 
+  # check if tables exist
+  if(!is.null(dir)) {
+    existing <- sapply(tables, function(i) any(stringr::str_detect(list.files(dir), i)))
+    if(any(existing)) {
+      download <- readline(paste(paste(tables[existing], collapse = ", "),
+                                 "already exist in", dir, "\nDownload anyway? (y/n)"))
+      if(download == "y") {
+        print("Downloading data")
+      } else {
+        stop("Not downloading data. Use read_sPlot() to load existing tables")
+      }
+    }
+  }
+
   # download zipped sPlotOpen data to temporary file
   temp <- tempfile()
   url <- "https://idata.idiv.de/ddm/Data/DownloadZip/3474?version=5047"
-  download.file(url, temp, mode = "wb")
+  utils::download.file(url, temp, mode = "wb")
 
   if (!is.null(dir)) {
 
     # extract to directory
-    unzip(temp, exdir = stringr::str_sub(dir, 1, -2))
+    utils::unzip(temp, exdir = stringr::str_sub(dir, 1, -2))
     unlink(temp)
 
     # load data
     if(load) {
-      data <- list(plots = readr::read_tsv(paste0(dir, "sPlotOpen_DT(1).txt")),
-                   comp = readr::read_tsv(paste0(dir, "sPlotOpen_header(2).txt")),
-                   traits = readr::read_tsv(paste0(dir, "sPlotOpen_CWM_CWV(1).txt")))
+      data <- list()
+      if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "DT")))
+      if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "header")), guess_max = 9999)
+      if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "CWM_CWV")))
+
       return(data)
     }
 
@@ -71,13 +89,14 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 
     # unzip to temporary directory
     tempDir <- tempdir()
-    unzip(temp, exdir = tempDir)
+    utils::unzip(temp, exdir = tempDir)
     unlink(temp)
 
     # load data
-    data <- list(comp = readr::read_tsv(paste0(tempDir, "/sPlotOpen_DT(1).txt")),
-                 plots = readr::read_tsv(paste0(tempDir, "/sPlotOpen_header(2).txt")),
-                 traits = readr::read_tsv(paste0(tempDir, "/sPlotOpen_CWM_CWV(1).txt")))
+    data <- list()
+    if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "DT")))
+    if("header" %in% tables) data$header <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "header")), guess_max = 9999)
+    if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "CWM_CWV")))
     return(data)
 
     # delete temporary directory
@@ -97,24 +116,28 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 #' @param dir Directory where sPlotOpen tables are stored.
 #' @param tables A character vector. Names of tables to load. Options are
 #'   (default is to load all):
-#'  * `"plots"`: plot-level information.
-#'  * `"comp"`: data on species composition of each plot in long format.
-#'  * `"traits"`: community-weighted means and variances for 18 traits.
-#' @param metadata If `TRUE` (the default), metadata will be loaded
+#'  * `"header"`: plot-level information.
+#'  * `"DT"`: data on species composition of each plot in long format.
+#'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #'
-#' @return List containing sPlotOpen data tables, each as a [`tibble()`].
+#' @return A named list containing sPlotOpen data tables as tibbles.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Download all sPlot tables, load into R, and save to local directory
-#' db <- get_sPlot(dir = tempdir())
+#' # Load all sPlotOpen tables
+#' db <- get_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
 #' }
 read_sPlot <- function(dir = "~/sPlotOpen/data",
-                       tables = c("plots", "comp", "traits")) {
-  data <- list(comp = readr::read_tsv(paste0(dir, "/sPlotOpen_DT(1).txt")),
-               plots = readr::read_tsv(paste0(dir, "/sPlotOpen_header(2).txt")),
-               traits = readr::read_tsv(paste0(dir, "/sPlotOpen_CWM_CWV(1).txt")))
+                       tables = c("header", "DT", "CWM_CWV")) {
+
+  if(any(c("DT", "header", "CWM_CWV") %in% tables) == F) stop("tables must include at least one of 'DT', 'header', 'CWM_CWV'")
+
+  data <- list()
+  if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "DT")))
+  if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "header")), guess_max = 9999)
+  if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "CWM_CWV")))
+
   return(data)
 }
 

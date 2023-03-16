@@ -6,7 +6,7 @@
 \usage{
 get_sPlot(
   dir = "~/sPlotOpen/data",
-  tables = c("plots", "comp", "traits"),
+  tables = c("header", "DT", "CWM_CWV"),
   metadata = TRUE,
   load = TRUE
 )
@@ -19,9 +19,9 @@ environment.}
 \item{tables}{A character vector. Names of tables to be downloaded. Options
 are (default is to download all):
 \itemize{
-\item \code{"plots"}: plot-level information.
-\item \code{"comp"}: data on species composition of each plot in long format.
-\item \code{"traits"}: community-weighted means and variances for 18 traits.
+\item \code{"header"}: plot-level information.
+\item \code{"DT"}: a list of species and relative cover in each vegetation plot.
+\item \code{"CWM_CWV"}: community-weighted means and variances for 18 traits.
 }}
 
 \item{metadata}{If \code{TRUE} (the default), metadata will be downloaded.}
@@ -30,7 +30,7 @@ are (default is to download all):
 }
 \value{
 If \code{load = TRUE}, returns a named list containing the downloaded
-tables, each as a \code{\link[=tibble]{tibble()}}.
+tables as tibbles.
 }
 \description{
 \code{get_sPlot()} downloads sPlotOpen data from the iDiv Data Repository and
@@ -39,6 +39,6 @@ saves the downloaded tables to a local directory and/or loads them into R.
 \examples{
 \dontrun{
 # Download all sPlot tables, load into R, and save to local directory
-  db <- get_sPlot(dir = tempdir())
+db <- get_sPlot(dir = tempdir())
 }
 }

@@ -4,14 +4,29 @@
 \alias{read_sPlot}
 \title{Load sPlotOpen data into R}
 \usage{
-read_sPlot(dir = "~/sPlotOpen/data")
+read_sPlot(dir = "~/sPlotOpen/data", tables = c("header", "DT", "CWM_CWV"))
 }
 \arguments{
 \item{dir}{Directory where sPlotOpen tables are stored.}
+
+\item{tables}{A character vector. Names of tables to load. Options are
+(default is to load all):
+\itemize{
+\item \code{"header"}: plot-level information.
+\item \code{"DT"}: data on species composition of each plot in long format.
+\item \code{"CWM_CWV"}: community-weighted means and variances for 18 traits.
+}}
 }
 \value{
-List containing sPlotOpen data tables.
+A named list containing sPlotOpen data tables as tibbles.
 }
 \description{
-Load sPlotOpen data into R
+\code{read_sPlot()} searches for sPlotOpen data tables in the directory you
+specify and, if present, loads them into R.
+}
+\examples{
+\dontrun{
+# Load all sPlotOpen tables
+db <- get_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
+}
 }
