@@ -40,8 +40,8 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 
 #' Filter sPlotOpen Data by Species
 #'
-#' `filter_species()` finds all vegetation plots that contain at least one
-#' species in a list you provide.
+#' `filter_species()` subsets the sPlotOpen data, retaining all vegetation plots
+#' that contain at least one species in a list you provide.
 #'
 #' @param data sPlotOpen data, a named list containing `DT` (species composition
 #'   data in long format) and `header` (plot-level information).
@@ -77,6 +77,9 @@ filter_species <- function(data, spp_list, join = FALSE) {
 
 
 #'Filter sPlotOpen Data by Spatial Polygon
+#'
+#'`filter_polygon()` creates a geographic subset of sPlotOpen data, retaining
+#'plots within the region (spatial polygon) you specify.
 #'
 #'@inheritParams filter_species
 #'@param x A simple features object, path to a shapefile, or matrix with points

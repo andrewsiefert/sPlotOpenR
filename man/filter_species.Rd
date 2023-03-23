@@ -21,8 +21,8 @@ one species in \code{spp_list}. If \code{join = F}, a list containing the filter
 joined tables.
 }
 \description{
-\code{filter_species()} finds all vegetation plots that contain at least one
-species in a list you provide.
+\code{filter_species()} subsets the sPlotOpen data, retaining all vegetation plots
+that contain at least one species in a list you provide.
 }
 \examples{
 data(greece)

@@ -21,7 +21,8 @@ If \code{join = F}, a list containing the filtered \code{DT} and \code{header} t
 \code{join = T}, a single data from containing the joined tables.
 }
 \description{
-Filter sPlotOpen Data by Spatial Polygon
+\code{filter_polygon()} creates a geographic subset of sPlotOpen data, retaining
+plots within the region (spatial polygon) you specify.
 }
 \examples{
 data(greece)
