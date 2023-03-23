@@ -29,9 +29,11 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
     sf::st_as_sf() %>%
     sf::st_transform(crs = "+proj=eck4")
 
-  countries <- sf::st_read("inst/extdata/ne_countries.shp")
+  cpath <- system.file("extdata", "ne_countries.shp", package = "sPlotOpenR")
+  countries <- sf::st_read(cpath)
 
-  bb <- sf::st_read("inst/extdata/ne_countries.shp")
+  bpath <- system.file("extdata", "ne_bb.shp", package = "sPlotOpenR")
+  bb <- sf::st_read(cpath)
 
 
   base <- ggplot2::ggplot() +
