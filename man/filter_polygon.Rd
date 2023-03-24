@@ -13,7 +13,8 @@ data in long format) and \code{header} (plot-level information).}
 \item{x}{A simple features object, path to a shapefile, or matrix with points
 (longitude, latitude) in rows.}
 
-\item{join}{Whether to join the filtered \code{DT} and \code{header} tables.}
+\item{join}{If \code{TRUE} (not the default), joins the filtered \code{DT} and \code{header}
+tables.}
 }
 \value{
 sPlotOpen data filtered to include only plots that intersect with \code{x}.

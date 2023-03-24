@@ -3,8 +3,8 @@
 #' `map_plots()` plots the locations of sPlotOpen Vegetation plots on a world
 #' map.
 #'
-#' @param data Either a list of sPlotOpen tables that includes the `header` table, or
-#'   the `header` table on its own as a data.frame.
+#' @param data Either a list of sPlotOpen tables that includes the `header`
+#'   table, or the `header` table on its own as a data.frame.
 #' @param type If `grid` (the default), plots the number of vegetation plots by
 #'   grid cell. If `points`, plots the locations of individual vegetation plots.
 #' @param grid_size The approximate spacing between grid cells (in km) if using
@@ -21,7 +21,7 @@
 #' }
 map_plots <- function(data, type = "grid", grid_size = 300) {
 
-  if(is.list(data)) data <- data$header
+  if(class(data)[1]=="list") data <- data$header
 
   plots <- sf::st_as_sf(data,
                         coords = c("Longitude", "Latitude"),
@@ -82,5 +82,29 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
 
     } else stop('type must be one of "grid" or "points"')
 
+}
+
+
+
+#'Map Species Occurrences
+#'
+#'`map_species()` plots a world map showing locations of sPlotOpen plots that
+#'contain the species you specify.
+#'
+#'@inheritParams filter_species
+#'@param species Species name.
+#'
+#'@return
+#'@export
+#'
+#' @examples
+#' data(greece)
+#' map_species(greece, species = "Fagus sylvatica")
+map_species <- function(data, species) {
+  data <- filter_species(data, species)
+  if(nrow(data$DT) == 0) stop("Species not found")
+  map_plots(data, type = "points") +
+    ggplot2::labs(title = species, font.face = "italic") +
+    ggplot2::theme(plot.title = ggplot2::element_text(face = "italic"))
 }
 

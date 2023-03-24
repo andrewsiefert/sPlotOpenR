@@ -4,7 +4,7 @@
 \alias{filter_species}
 \title{Filter sPlotOpen Data by Species}
 \usage{
-filter_species(data, spp_list, join = FALSE)
+filter_species(data, spp_list, resolve = FALSE, join = FALSE)
 }
 \arguments{
 \item{data}{sPlotOpen data, a named list containing \code{DT} (species composition
@@ -12,17 +12,21 @@ data in long format) and \code{header} (plot-level information).}
 
 \item{spp_list}{A vector of species names.}
 
-\item{join}{Whether to join the filtered \code{DT} and \code{header} tables.}
+\item{resolve}{If \code{TRUE} (not the default), resolves species names using
+TNRS.}
+
+\item{join}{If \code{TRUE} (not the default), joins the filtered \code{DT} and \code{header}
+tables.}
 }
 \value{
 sPlotOpen data filtered to include only plots that contain at least
-one species in \code{spp_list}. If \code{join = F}, a list containing the filtered
-\code{DT} and \code{header} tables. If \code{join = T}, a single data from containing the
-joined tables.
+one species in \code{spp_list}. If \code{join = FALSE}, a list containing the
+filtered \code{DT} and \code{header} tables. If \code{join = TRUE}, a single data from
+containing the joined tables.
 }
 \description{
 \code{filter_species()} subsets the sPlotOpen data, retaining all vegetation plots
-that contain at least one species in a list you provide.
+that contain at least one species in the species list you provide.
 }
 \examples{
 data(greece)

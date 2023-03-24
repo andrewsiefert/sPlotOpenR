@@ -1,9 +1,14 @@
 #' Create a Site-by-Species Matrix
 #'
-#' @param data sPlotOpen species composition data in long format.
-#' @param sparse Whether to return a sparse matrix (default is `FALSE`).
-#' @param pres_abs Whether to convert species relative cover data to
-#'   presence-absence (default is `FALSE`).
+#' `site_by_species()` converts sPlotOpen species composition data in long
+#' format (`DT` table) to a site-by-species abundance or presence-absence
+#' matrix.
+#'
+#' @param data Either a list of sPlotOpen tables that includes the `DT` table,
+#'   or the `DT` table on its own as a data.frame.
+#' @param sparse If `TRUE` (not the default), returns a sparse matrix.
+#' @param pres_abs If `TRUE` (not the default), converts species relative cover
+#'   data to presence-absence.
 #'
 #' @return A matrix (sites as rows, species as columns) of species relative
 #'   cover or presence-absence.
@@ -15,6 +20,11 @@
 #' comp <- greece$DT
 #' m <- site_by_species(comp)
 site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
+
+  if(class(data)[1]=="list") data <- data$DT
+
+  data <- data %>% dplyr::filter(!is.na(Species))
+
   sites <- factor(data$PlotObservationID)
   species <- factor(data$Species)
   if(isTRUE(pres_abs)) {
@@ -41,17 +51,20 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 #' Filter sPlotOpen Data by Species
 #'
 #' `filter_species()` subsets the sPlotOpen data, retaining all vegetation plots
-#' that contain at least one species in a list you provide.
+#' that contain at least one species in the species list you provide.
 #'
 #' @param data sPlotOpen data, a named list containing `DT` (species composition
 #'   data in long format) and `header` (plot-level information).
 #' @param spp_list A vector of species names.
-#' @param join Whether to join the filtered `DT` and `header` tables.
+#' @param join If `TRUE` (not the default), joins the filtered `DT` and `header`
+#'   tables.
+#' @param resolve If `TRUE` (not the default), resolves species names using
+#'   TNRS.
 #'
 #' @return sPlotOpen data filtered to include only plots that contain at least
-#'   one species in `spp_list`. If `join = F`, a list containing the filtered
-#'   `DT` and `header` tables. If `join = T`, a single data from containing the
-#'   joined tables.
+#'   one species in `spp_list`. If `join = FALSE`, a list containing the
+#'   filtered `DT` and `header` tables. If `join = TRUE`, a single data from
+#'   containing the joined tables.
 #'
 #' @export
 #'
@@ -60,9 +73,19 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 #'
 #' spp <- c("Silene atropurpurea", "Corylus avellana")
 #' greece_filtered <- filter_species(greece, spp, join = FALSE)
-filter_species <- function(data, spp_list, join = FALSE) {
+filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
+
+  if(isTRUE(resolve)) {
+    spp_list <- TNRS::TNRS(spp_list,
+                           sources = c("wfo", "tropicos", "wcvp"))$Name_matched
+  }
 
   spp_filtered <- dplyr::filter(data$DT, Species %in% spp_list)
+
+  n_sp <- length(spp_list)
+  n_match <- sum(spp_list %in% spp_filtered$Species)
+  print(paste(n_match, "of", n_sp, "species present in sPlotOpen data"))
+
   plots_w_spp <- dplyr::distinct(spp_filtered, PlotObservationID)
 
   header_filtered <- dplyr::inner_join(data$header, plots_w_spp)

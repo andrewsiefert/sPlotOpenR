@@ -12,7 +12,6 @@ RoxygenNote: 7.2.3
 Imports: 
     dplyr,
     magrittr,
-    Matrix,
     readr,
     stringr
 URL: https://github.com/andrewsiefert/sPlotOpenR
@@ -23,5 +22,7 @@ LazyData: true
 Suggests: 
     dggridR,
     ggplot2,
+    Matrix,
     sf,
+    TNRS,
     viridis

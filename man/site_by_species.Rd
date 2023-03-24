@@ -7,19 +7,22 @@
 site_by_species(data, sparse = FALSE, pres_abs = FALSE)
 }
 \arguments{
-\item{data}{sPlotOpen species composition data in long format.}
+\item{data}{Either a list of sPlotOpen tables that includes the \code{DT} table,
+or the \code{DT} table on its own as a data.frame.}
 
-\item{sparse}{Whether to return a sparse matrix (default is \code{FALSE}).}
+\item{sparse}{If \code{TRUE} (not the default), returns a sparse matrix.}
 
-\item{pres_abs}{Whether to convert species relative cover data to
-presence-absence (default is \code{FALSE}).}
+\item{pres_abs}{If \code{TRUE} (not the default), converts species relative cover
+data to presence-absence.}
 }
 \value{
 A matrix (sites as rows, species as columns) of species relative
 cover or presence-absence.
 }
 \description{
-Create a Site-by-Species Matrix
+\code{site_by_species()} converts sPlotOpen species composition data in long
+format (\code{DT} table) to a site-by-species abundance or presence-absence
+matrix.
 }
 \examples{
 data(greece)

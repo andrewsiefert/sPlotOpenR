@@ -7,8 +7,8 @@
 map_plots(data, type = "grid", grid_size = 300)
 }
 \arguments{
-\item{data}{Either a list of sPlotOpen tables that includes the \code{header} table, or
-the \code{header} table on its own as a data.frame.}
+\item{data}{Either a list of sPlotOpen tables that includes the \code{header}
+table, or the \code{header} table on its own as a data.frame.}
 
 \item{type}{If \code{grid} (the default), plots the number of vegetation plots by
 grid cell. If \code{points}, plots the locations of individual vegetation plots.}
