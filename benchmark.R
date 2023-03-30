@@ -15,3 +15,13 @@ countries <- ne_countries(returnclass = "sf")
 europe <- countries %>% 
   filter(continent == "Europe") %>% 
   st_union()
+
+#' ## Check sPlotOpen documentation
+
+#' Check for package information
+?sPlotOpen
+
+#' There is no general description of the package
+
+??sPlotOpen
+#' But there is good documentation for the functions
