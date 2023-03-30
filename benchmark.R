@@ -19,12 +19,12 @@ europe <- countries %>%
 #' ## Check sPlotOpen documentation
 
 #' Check for package information
-?sPlotOpen
+?sPlotOpenR
 
-#' There is no general description of the package
+#' There is no general description of the package.
 
-??sPlotOpen
-#' But there is good documentation for the functions
+??sPlotOpenR
+#' But there is good documentation for the functions.
 
 
 #' ## Testing the functions
@@ -37,9 +37,9 @@ get_sPlot()
 #' However, all files in the iDiv repository were saved within the directory, in addition to the three table data (DT, header and CWM_CVM)
 #' For example, the pdf file Demo.pdf and the folder Schema. 
 #' I believe this is occurring because now we can only download all files from the iDiv portal.
-#' Also, I think this will be changed by the argument metadata = FALSE, right?
-
-
+#' Also, I think this will be changed when the  argument metadata is implemented, right?
+#'
+#'
 #' #### Changing arguments
 #' 
 #' 
@@ -49,7 +49,7 @@ get_sPlot(tables = "test")
 #' 
 #' Ask for nonexistent table while also asking for existing table
 get_sPlot(tables = c("header", "test"))
-#' Correct message about overwriting header, but no message that "test" was ignored.
+#' Correct message about overwriting header, but no message that "test" was ignored. Should we add it?
 #'
 #'
 #' Include existent directory
@@ -57,7 +57,19 @@ get_sPlot(dir = "C:/Users/faria/Nextcloud/sPlot")
 #' It works nice, but save all files directly in directory, without placing them in a folder.
 #' I think an option to handle this is to create a folder named after the version of sPlotOpen being downloaded, as discussed in the Google Docs.
 #'
-
+#'
 #' Include nonexistent directory
 get_sPlot(dir = "C:/Users/faria/Nextcloud/nonexisting")
 #' Works nicely, creating the desired directory.
+#' 
+#' 
+#' Only download files, without loading them in R.
+get_sPlot(load = FALSE)
+#' Works nicely.
+#' 
+#' Not requesting metadata
+get_sPlot(metadata = FALSE)
+#' Not implemented yet.
+#' 
+#' 
+#' ###
