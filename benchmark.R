@@ -1,6 +1,7 @@
+#' ---
 #' title: "Testing package's functions"
 #' output: github_document
-
+#' ---
 
 #' ## Install and load the sPlot package
 devtools::install_github("andrewsiefert/sPlotOpenR", force = TRUE)
