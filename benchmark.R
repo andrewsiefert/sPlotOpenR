@@ -130,4 +130,26 @@ filter_species(spp_list)
 #' Not very usefull automatic message, should we add one?
 #' 
 #' 
+#' ### filter_polygon()
+#' 
+#' Default options
+filter_polygon(data, countries %>% filter(continent == "Africa"))
+#' Works nicely.
+#' 
+#' Setting join = TRUE
+filter_polygon(data, countries %>% filter(continent == "Africa"), join = TRUE)
+#' Works nicely
+#' 
+#' Testing a polygon with geometry composed by a list of lists
+filter_polygon(data, europe)
+#' Also works fine
+#' 
+#' Testing a wrong input for data
+filter_polygon(europe)
+#' Same as for filter_species(). Should we add a more informative message?
+#' 
+#' Testing a wrong input for polygon.
+filter_polygon(data, countries %>% st_drop_geometry())
+#' Uninformative message. Should we add a better one?
+#' 
 #' 
