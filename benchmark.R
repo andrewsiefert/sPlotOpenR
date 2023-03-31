@@ -112,8 +112,8 @@ filter_species(data, spp_list)
 #' 
 #' Setting resolve = TRUE
 filter_species(data, spp_list = c("Luzulula arcuata"), resolve = TRUE)
-#' Results in error if TNRS package is not installed.
-#' The matching using TNRS works fine after the package is installed and loaded.
+#' Dependency problem: results in error if TNRS package is not installed.
+#' The matching using TNRS works fine after the package is installed.
 #' 
 #' 
 #' Setting join = TRUE
@@ -152,4 +152,25 @@ filter_polygon(europe)
 filter_polygon(data, countries %>% st_drop_geometry())
 #' Uninformative message. Should we add a better one?
 #' 
+#' ### map_plots()
 #' 
+#' Default options
+map_plots(data)
+#' Dependency problem: results in error if package dggridR is not installed
+#' Works nicely after installed.
+#' 
+#' Including wrong input for data
+map_plots(spp_list)
+#' Uninformative message, should we add a better one?
+#' 
+#' Setting type = "points"
+map_plots(data, type = "points")
+#' Works fine
+#' 
+#' Setting type as a different option
+map_plots(data, type = "polygon")
+#' Nice informative error message.
+#' 
+#' Setting a different size of grid
+map_plots(data, grid_size = 500)
+#' Works nicely.
