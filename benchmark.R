@@ -99,3 +99,35 @@ read_sPlot(tables = c("test"))
 read_sPlot(tables = c("DT", "test"))
 #' No message about the ignored argument. Should we add any?
 #' 
+#' 
+#' 
+#' ### filter_species()
+#' 
+#' Default options
+spp_list <- c("Luzula arcuata", "Bauhinia variegata")
+data <- read_sPlot()
+
+filter_species(data, spp_list)
+#' Works fine, including the messages.
+#' 
+#' Setting resolve = TRUE
+filter_species(data, spp_list = c("Luzulula arcuata"), resolve = TRUE)
+#' Results in error if TNRS package is not installed.
+#' The matching using TNRS works fine after the package is installed and loaded.
+#' 
+#' 
+#' Setting join = TRUE
+filter_species(data, spp_list, join = TRUE)
+#' Works fine
+#' 
+#' Using a different object as input for spp_list (as a tibble or a list)
+filter_species(data, spp_list = as_tibble(spp_list))
+#' Nothing is done and no message is returned. Should we add one?
+#' 
+#' 
+#' Using a wrong input for the data argument
+filter_species(spp_list)
+#' Not very usefull automatic message, should we add one?
+#' 
+#' 
+#' 
