@@ -72,4 +72,30 @@ get_sPlot(metadata = FALSE)
 #' Not implemented yet.
 #' 
 #' 
-#' ###
+#' ### read_sPlot()
+#' 
+#' With default options
+#' 
+read_sPlot()
+#' Works fine.
+#' 
+#' Reading from an alternative directory
+read_sPlot(dir = "C:/Users/faria/Nextcloud/sPlotOpen/data")
+#' Works fine.
+#' 
+#' Reading it from a wrong directory.
+read_sPlot(dir = "~/Nextcloud")
+#' It simply does nothing, should we add an error message?
+#'
+#' Reading only one table
+read_sPlot(tables = c("DT"))
+#' Works fine.
+#' 
+#' Reading a nonexistent table
+read_sPlot(tables = c("test"))
+#' Correct error message
+#' 
+#' Reading a nonexistent table together with an existent table
+read_sPlot(tables = c("DT", "test"))
+#' No message about the ignored argument. Should we add any?
+#' 
