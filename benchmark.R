@@ -1,3 +1,7 @@
+#' title: "Testing package's functions"
+#' output: github_document
+
+
 #' ## Install and load the sPlot package
 devtools::install_github("andrewsiefert/sPlotOpenR", force = TRUE)
 library(sPlotOpenR)
@@ -112,7 +116,7 @@ filter_species(data, spp_list)
 #' 
 #' Setting resolve = TRUE
 filter_species(data, spp_list = c("Luzulula arcuata"), resolve = TRUE)
-#' Dependency problem: results in error if TNRS package is not installed.
+#' **Dependency problem: results in error if TNRS package is not installed.**
 #' The matching using TNRS works fine after the package is installed.
 #' 
 #' 
@@ -156,7 +160,7 @@ filter_polygon(data, countries %>% st_drop_geometry())
 #' 
 #' Default options
 map_plots(data)
-#' Dependency problem: results in error if package dggridR is not installed
+#' **Dependency problem: results in error if package dggridR is not installed**
 #' Works nicely after installed.
 #' 
 #' Including wrong input for data
@@ -174,3 +178,4 @@ map_plots(data, type = "polygon")
 #' Setting a different size of grid
 map_plots(data, grid_size = 500)
 #' Works nicely.
+#' 
