@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualize_data.R
 \name{map_species}
 \alias{map_species}
-\title{Map the Distribution of a Species}
+\title{Map Species Occurrences}
 \usage{
 map_species(data, species)
 }

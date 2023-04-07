@@ -27,6 +27,6 @@ specify and, if present, loads them into R.
 \examples{
 \dontrun{
 # Load all sPlotOpen tables
-db <- get_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
+db <- read_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
 }
 }
