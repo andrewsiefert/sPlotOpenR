@@ -126,7 +126,7 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 #' @examples
 #' \dontrun{
 #' # Load all sPlotOpen tables
-#' db <- get_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
+#' db <- read_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
 #' }
 read_sPlot <- function(dir = "~/sPlotOpen/data",
                        tables = c("header", "DT", "CWM_CWV")) {
