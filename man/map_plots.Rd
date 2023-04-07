@@ -16,7 +16,7 @@ grid cell. If \code{points}, plots the locations of individual vegetation plots.
 \item{grid_size}{The approximate spacing between grid cells (in km) if using
 \code{type = grid}.}
 
-\item{extent}{The extent of the retured map. Can be \code{world} or \code{aoi}, if the map should be zoomed to the area of interest}
+\item{map_extent}{The extent of the retured map. Can be \code{world} or \code{aoi}, if the map should be zoomed to the area of interest}
 }
 \value{
 A world map showing the locations of plots.
