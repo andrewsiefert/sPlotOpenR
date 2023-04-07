@@ -9,7 +9,7 @@
 #'   grid cell. If `points`, plots the locations of individual vegetation plots.
 #' @param grid_size The approximate spacing between grid cells (in km) if using
 #'   `type = grid`.
-#' @param extent The extent of the retured map. Can be `world` or `aoi`, if the map should be zoomed to the area of interest
+#' @param map_extent The extent of the retured map. Can be `world` or `aoi`, if the map should be zoomed to the area of interest
 #'
 #'
 #' @return A world map showing the locations of plots.
