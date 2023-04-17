@@ -9,6 +9,7 @@
 #'   grid cell. If `points`, plots the locations of individual vegetation plots.
 #' @param grid_size The approximate spacing between grid cells (in km) if using
 #'   `type = grid`.
+#' @param map_extent The extent of the retured map. Can be `world` or `aoi`, if the map should be zoomed to the area of interest
 #'
 #'
 #' @return A world map showing the locations of plots.
@@ -17,9 +18,9 @@
 #' @examples
 #' \dontrun{
 #' data(greece)
-#' map_plots(greece)
+#' map_plots(greece, grid_size=100, map_extent="aoi")
 #' }
-map_plots <- function(data, type = "grid", grid_size = 300) {
+map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") {
 
   if(class(data)[1]=="list") data <- data$header
 
@@ -48,6 +49,7 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
                    legend.key.height = ggplot2::unit(1.1, "cm"),
                    legend.key.width = ggplot2::unit(1.1, "cm"))
 
+
   if(type == "grid") {
 
     dggs <- dggridR::dgconstruct(spacing = grid_size, metric = T, resround = 'nearest', show_info = FALSE)
@@ -68,21 +70,38 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
       sf::st_transform("+proj=eck4") %>%
       sf::st_wrap_dateline(options = c("WRAPDATELINE=YES"))
 
-    ## plotting
-    base +
+    ## Prepare plotting
+    map_out <- base +
       ggplot2::geom_sf(data = grid, ggplot2::aes(fill = value), color = NA, alpha=0.9)    +
       viridis::scale_fill_viridis(breaks = 0:4, labels = c("1", "10", "100", "1,000", "10,000")) +
       ggplot2::labs(fill = "# plots")
 
     } else if(type == "points") {
 
-    base +
+    map_out <- base +
       ggplot2::geom_sf(data = plots, size=1, alpha=0.8, color = "forestgreen") +
         ggplot2::theme(legend.position = "none")
 
     } else stop('type must be one of "grid" or "points"')
 
+  if(map_extent == "aoi"){
+    plots_bbox <- sf::st_bbox(plots)
+
+    ## plotting
+    map_out +
+      ggplot2::coord_sf(crs = "+proj=eck4",
+                        xlim = c(plots_bbox[1] - 1000000,
+                                 plots_bbox[3] + 1000000),
+                        ylim = c(plots_bbox[2] - 1000000,
+                                 plots_bbox[4] + 1000000),
+                        expand = FALSE)
+  } else if(map_extent == "world") {
+    map_out
+  } else stop('map_extent must be one of "world" or "aoi"')
 }
+
+
+
 
 
 

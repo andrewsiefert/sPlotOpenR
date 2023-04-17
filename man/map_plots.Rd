@@ -4,7 +4,7 @@
 \alias{map_plots}
 \title{Map sPlotOpen Plots}
 \usage{
-map_plots(data, type = "grid", grid_size = 300)
+map_plots(data, type = "grid", grid_size = 300, map_extent = "world")
 }
 \arguments{
 \item{data}{Either a list of sPlotOpen tables that includes the \code{header}
@@ -15,6 +15,8 @@ grid cell. If \code{points}, plots the locations of individual vegetation plots.
 
 \item{grid_size}{The approximate spacing between grid cells (in km) if using
 \code{type = grid}.}
+
+\item{map_extent}{The extent of the retured map. Can be \code{world} or \code{aoi}, if the map should be zoomed to the area of interest}
 }
 \value{
 A world map showing the locations of plots.
@@ -26,6 +28,6 @@ map.
 \examples{
 \dontrun{
 data(greece)
-map_plots(greece)
+map_plots(greece, grid_size=100, map_extent="aoi")
 }
 }
