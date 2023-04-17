@@ -4,13 +4,19 @@
 \alias{map_species}
 \title{Map Species Occurrences}
 \usage{
-map_species(data, species)
+map_species(data, species, extent)
 }
 \arguments{
 \item{data}{sPlotOpen data, a named list containing \code{DT} (species composition
 data in long format) and \code{header} (plot-level information).}
 
 \item{species}{Species name.}
+
+\item{extent}{The extent of the returned map. Can be \code{world} or \code{aoi}, if
+the map should be zoomed to the area of interest.}
+}
+\value{
+A map of speices occurrences.
 }
 \description{
 \code{map_species()} plots a world map showing locations of sPlotOpen plots that
@@ -18,5 +24,5 @@ contain the species you specify.
 }
 \examples{
 data(greece)
-map_species(greece, species = "Fagus sylvatica")
+map_species(greece, species = "Fagus sylvatica", extent = "aoi")
 }

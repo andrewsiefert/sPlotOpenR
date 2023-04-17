@@ -9,18 +9,19 @@
 #'   grid cell. If `points`, plots the locations of individual vegetation plots.
 #' @param grid_size The approximate spacing between grid cells (in km) if using
 #'   `type = grid`.
-#' @param map_extent The extent of the retured map. Can be `world` or `aoi`, if the map should be zoomed to the area of interest
+#' @param extent The extent of the returned map. Can be `world` or `aoi`, if
+#'   the map should be zoomed to the area of interest.
 #'
 #'
-#' @return A world map showing the locations of plots.
+#' @return A map showing the locations of plots.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' data(greece)
-#' map_plots(greece, grid_size=100, map_extent="aoi")
+#' map_plots(greece, grid_size=100, extent="aoi")
 #' }
-map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") {
+map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
 
   if(class(data)[1]=="list") data <- data$header
 
@@ -70,10 +71,13 @@ map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") 
       sf::st_transform("+proj=eck4") %>%
       sf::st_wrap_dateline(options = c("WRAPDATELINE=YES"))
 
+    brk <- 0:max(ceiling(grid$value))
+    lbl <- c("1", "10", "100", "1,000", "10,000")[1:length(brk)]
+
     ## Prepare plotting
     map_out <- base +
       ggplot2::geom_sf(data = grid, ggplot2::aes(fill = value), color = NA, alpha=0.9)    +
-      viridis::scale_fill_viridis(breaks = 0:4, labels = c("1", "10", "100", "1,000", "10,000")) +
+      viridis::scale_fill_viridis(breaks = brk, labels = lbl) +
       ggplot2::labs(fill = "# plots")
 
     } else if(type == "points") {
@@ -84,7 +88,7 @@ map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") 
 
     } else stop('type must be one of "grid" or "points"')
 
-  if(map_extent == "aoi"){
+  if(extent == "aoi"){
     plots_bbox <- sf::st_bbox(plots)
 
     ## plotting
@@ -95,13 +99,10 @@ map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") 
                         ylim = c(plots_bbox[2] - 1000000,
                                  plots_bbox[4] + 1000000),
                         expand = FALSE)
-  } else if(map_extent == "world") {
+  } else if(extent == "world") {
     map_out
-  } else stop('map_extent must be one of "world" or "aoi"')
+  } else stop('extent must be one of "world" or "aoi"')
 }
-
-
-
 
 
 
@@ -111,18 +112,19 @@ map_plots <- function(data, type = "grid", grid_size = 300, map_extent="world") 
 #'contain the species you specify.
 #'
 #'@inheritParams filter_species
+#'@inheritParams map_plots
 #'@param species Species name.
 #'
-#'@return
+#'@return A map of speices occurrences.
 #'@export
 #'
 #' @examples
 #' data(greece)
-#' map_species(greece, species = "Fagus sylvatica")
-map_species <- function(data, species) {
+#' map_species(greece, species = "Fagus sylvatica", extent = "aoi")
+map_species <- function(data, species, extent) {
   data <- filter_species(data, species)
   if(nrow(data$DT) == 0) stop("Species not found")
-  map_plots(data, type = "points") +
+  map_plots(data, type = "points", extent = extent) +
     ggplot2::labs(title = species, font.face = "italic") +
     ggplot2::theme(plot.title = ggplot2::element_text(face = "italic"))
 }
