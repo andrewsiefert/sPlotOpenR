@@ -46,7 +46,7 @@ map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
     ggplot2::theme(axis.text = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size=12),
                    legend.text = ggplot2::element_text(size=12),
-                   legend.background = ggplot2::element_rect(size=0.1, linetype="solid", colour = 1),
+                   legend.background = ggplot2::element_rect(linewidth=0.1, linetype="solid", colour = 1),
                    legend.key.height = ggplot2::unit(1.1, "cm"),
                    legend.key.width = ggplot2::unit(1.1, "cm"))
 
@@ -114,6 +114,10 @@ map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
 #'@inheritParams filter_species
 #'@inheritParams map_plots
 #'@param species Species name.
+#' @param extent The extent of the returned map. Can be `world` or `aoi`, if
+#'   the map should be zoomed to the area of interest.
+#'@param resolve If `TRUE` (not the default), resolves species names using
+#'   TNRS.
 #'
 #'@return A map of speices occurrences.
 #'@export
@@ -121,11 +125,14 @@ map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
 #' @examples
 #' data(greece)
 #' map_species(greece, species = "Fagus sylvatica", extent = "aoi")
-map_species <- function(data, species, extent) {
-  data <- filter_species(data, species)
+map_species <- function(data, species, extent="world", resolve = FALSE) {
+  data <- filter_species(data, species, resolve)
   if(nrow(data$DT) == 0) stop("Species not found")
+  if(length(species)==1){
+    mytitle <- species
+  } else {mytitle <- ("Selected species")}
   map_plots(data, type = "points", extent = extent) +
-    ggplot2::labs(title = species, font.face = "italic") +
+    ggplot2::labs(title = mytitle, font.face = "italic") +
     ggplot2::theme(plot.title = ggplot2::element_text(face = "italic"))
 }
 
