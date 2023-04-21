@@ -4,7 +4,7 @@
 \alias{map_species}
 \title{Map Species Occurrences}
 \usage{
-map_species(data, species, extent)
+map_species(data, species, extent = "world", resolve = FALSE)
 }
 \arguments{
 \item{data}{sPlotOpen data, a named list containing \code{DT} (species composition
@@ -14,6 +14,9 @@ data in long format) and \code{header} (plot-level information).}
 
 \item{extent}{The extent of the returned map. Can be \code{world} or \code{aoi}, if
 the map should be zoomed to the area of interest.}
+
+\item{resolve}{If \code{TRUE} (not the default), resolves species names using
+TNRS.}
 }
 \value{
 A map of speices occurrences.
