@@ -76,8 +76,15 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
 
   if(isTRUE(resolve)) {
-    spp_list <- TNRS::TNRS(spp_list,
-                           sources = c("wfo", "tropicos", "wcvp"))$Name_matched
+    spp_list_tmp <- TNRS::TNRS(spp_list,
+                           sources = c("wfo", "tropicos", "wcvp"))[,c("Name_submitted", "Accepted_name")]
+    if(nrow(dplyr::filter(spp_list_tmp, Name_submitted != Accepted_name))>0){
+      #Strip x in case of hybrid species
+      spp_list_tmp$Accepted_name <- sub(pattern=" x ", replacement=" ", x=spp_list_tmp$Accepted_name)
+      print("Some submitted species names were resolved as follows:")
+      print(dplyr::filter(spp_list_tmp, Name_submitted != Accepted_name))
+    }
+    spp_list <- spp_list_tmp$Accepted_name
   }
 
   spp_filtered <- dplyr::filter(data$DT, Species %in% spp_list)

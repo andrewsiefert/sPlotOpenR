@@ -2,15 +2,24 @@
 % Please edit documentation in R/visualize_data.R
 \name{map_species}
 \alias{map_species}
-\title{Map the Distribution of a Species}
+\title{Map Species Occurrences}
 \usage{
-map_species(data, species)
+map_species(data, species, extent = "world", resolve = FALSE)
 }
 \arguments{
 \item{data}{sPlotOpen data, a named list containing \code{DT} (species composition
 data in long format) and \code{header} (plot-level information).}
 
 \item{species}{Species name.}
+
+\item{extent}{The extent of the returned map. Can be \code{world} or \code{aoi}, if
+the map should be zoomed to the area of interest.}
+
+\item{resolve}{If \code{TRUE} (not the default), resolves species names using
+TNRS.}
+}
+\value{
+A map of speices occurrences.
 }
 \description{
 \code{map_species()} plots a world map showing locations of sPlotOpen plots that
@@ -18,5 +27,5 @@ contain the species you specify.
 }
 \examples{
 data(greece)
-map_species(greece, species = "Fagus sylvatica")
+map_species(greece, species = "Fagus sylvatica", extent = "aoi")
 }

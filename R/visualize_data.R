@@ -9,17 +9,19 @@
 #'   grid cell. If `points`, plots the locations of individual vegetation plots.
 #' @param grid_size The approximate spacing between grid cells (in km) if using
 #'   `type = grid`.
+#' @param extent The extent of the returned map. Can be `world` or `aoi`, if
+#'   the map should be zoomed to the area of interest.
 #'
 #'
-#' @return A world map showing the locations of plots.
+#' @return A map showing the locations of plots.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' data(greece)
-#' map_plots(greece)
+#' map_plots(greece, grid_size=100, extent="aoi")
 #' }
-map_plots <- function(data, type = "grid", grid_size = 300) {
+map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
 
   if(class(data)[1]=="list") data <- data$header
 
@@ -44,9 +46,10 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
     ggplot2::theme(axis.text = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size=12),
                    legend.text = ggplot2::element_text(size=12),
-                   legend.background = ggplot2::element_rect(size=0.1, linetype="solid", colour = 1),
+                   legend.background = ggplot2::element_rect(linewidth=0.1, linetype="solid", colour = 1),
                    legend.key.height = ggplot2::unit(1.1, "cm"),
                    legend.key.width = ggplot2::unit(1.1, "cm"))
+
 
   if(type == "grid") {
 
@@ -68,20 +71,37 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
       sf::st_transform("+proj=eck4") %>%
       sf::st_wrap_dateline(options = c("WRAPDATELINE=YES"))
 
-    ## plotting
-    base +
+    brk <- 0:max(ceiling(grid$value))
+    lbl <- c("1", "10", "100", "1,000", "10,000")[1:length(brk)]
+
+    ## Prepare plotting
+    map_out <- base +
       ggplot2::geom_sf(data = grid, ggplot2::aes(fill = value), color = NA, alpha=0.9)    +
-      viridis::scale_fill_viridis(breaks = 0:4, labels = c("1", "10", "100", "1,000", "10,000")) +
+      viridis::scale_fill_viridis(breaks = brk, labels = lbl) +
       ggplot2::labs(fill = "# plots")
 
     } else if(type == "points") {
 
-    base +
+    map_out <- base +
       ggplot2::geom_sf(data = plots, size=1, alpha=0.8, color = "forestgreen") +
         ggplot2::theme(legend.position = "none")
 
     } else stop('type must be one of "grid" or "points"')
 
+  if(extent == "aoi"){
+    plots_bbox <- sf::st_bbox(plots)
+
+    ## plotting
+    map_out +
+      ggplot2::coord_sf(crs = "+proj=eck4",
+                        xlim = c(plots_bbox[1] - 1000000,
+                                 plots_bbox[3] + 1000000),
+                        ylim = c(plots_bbox[2] - 1000000,
+                                 plots_bbox[4] + 1000000),
+                        expand = FALSE)
+  } else if(extent == "world") {
+    map_out
+  } else stop('extent must be one of "world" or "aoi"')
 }
 
 
@@ -92,19 +112,27 @@ map_plots <- function(data, type = "grid", grid_size = 300) {
 #'contain the species you specify.
 #'
 #'@inheritParams filter_species
+#'@inheritParams map_plots
 #'@param species Species name.
+#' @param extent The extent of the returned map. Can be `world` or `aoi`, if
+#'   the map should be zoomed to the area of interest.
+#'@param resolve If `TRUE` (not the default), resolves species names using
+#'   TNRS.
 #'
-#'@return
+#'@return A map of speices occurrences.
 #'@export
 #'
 #' @examples
 #' data(greece)
-#' map_species(greece, species = "Fagus sylvatica")
-map_species <- function(data, species) {
-  data <- filter_species(data, species)
+#' map_species(greece, species = "Fagus sylvatica", extent = "aoi")
+map_species <- function(data, species, extent="world", resolve = FALSE) {
+  data <- filter_species(data, species, resolve)
   if(nrow(data$DT) == 0) stop("Species not found")
-  map_plots(data, type = "points") +
-    ggplot2::labs(title = species, font.face = "italic") +
+  if(length(species)==1){
+    mytitle <- species
+  } else {mytitle <- ("Selected species")}
+  map_plots(data, type = "points", extent = extent) +
+    ggplot2::labs(title = mytitle, font.face = "italic") +
     ggplot2::theme(plot.title = ggplot2::element_text(face = "italic"))
 }
 
