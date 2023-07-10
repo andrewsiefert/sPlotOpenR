@@ -31,7 +31,11 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
   op <- options()
   options(timeout = 3600)
 
+  # check at least one existing table is required
   if(any(c("DT", "header", "CWM_CWV") %in% tables) == F) stop("tables must include at least one of 'DT', 'header', 'CWM_CWV'")
+
+  # check all required tables exist
+  if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV' as values")
 
   # create directory
   if (!is.null(dir)) {
