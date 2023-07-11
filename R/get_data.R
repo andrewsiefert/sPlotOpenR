@@ -35,7 +35,7 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
   if(any(c("DT", "header", "CWM_CWV") %in% tables) == F) stop("tables must include at least one of 'DT', 'header', 'CWM_CWV'")
 
   # check all required tables exist
-  if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV' as values")
+  if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV'")
 
   # create directory
   if (!is.null(dir)) {
@@ -135,7 +135,14 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 read_sPlot <- function(dir = "~/sPlotOpen/data",
                        tables = c("header", "DT", "CWM_CWV")) {
 
+  # check at least one existing table is required
   if(any(c("DT", "header", "CWM_CWV") %in% tables) == F) stop("tables must include at least one of 'DT', 'header', 'CWM_CWV'")
+
+  # check all required tables exist
+  if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV'")
+
+  # check data exists in the specified directory
+  if(!any(grepl("header|DT|CWM_CWV", list.files(dir)))) stop("There is no sPlotOpen files stored in this directory")
 
   data <- list()
   if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "DT")))
