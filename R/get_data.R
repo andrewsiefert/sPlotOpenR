@@ -13,6 +13,8 @@
 #'  * `"DT"`: a list of species and relative cover in each vegetation plot.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #' @param metadata If `TRUE` (the default), metadata will be downloaded.
+#' @param additional_data If `FALSE` (the default) additional data downloaded
+#'   from repository will be discarded.
 #'
 #' @return If `load = TRUE`, returns a named list containing the downloaded
 #'   tables as tibbles.
@@ -26,7 +28,8 @@
 get_sPlot <- function(dir = "~/sPlotOpen/data",
                       tables = c("header", "DT", "CWM_CWV"),
                       metadata = TRUE,
-                      load = TRUE) {
+                      load = TRUE,
+                      additional_data = FALSE) {
 
   op <- options()
   options(timeout = 3600)
@@ -78,6 +81,21 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     # extract to directory
     utils::unzip(temp, exdir = stringr::str_sub(dir, 1, -2))
     unlink(temp)
+
+    # delete additional files
+    # keep only DT, header and CWM_CWV files
+
+    if(!isTRUE(additional_data)){
+
+      files.to.remove <- list(list.files(dir, full.names = TRUE)[!grepl("header|DT|CWM_CWV",list.files(dir))])
+
+      do.call(file.remove, files.to.remove)
+
+      directories.to.remove <- list.dirs(dir, full.names = TRUE, recursive = FALSE)
+
+      unlink(directories.to.remove, recursive = TRUE)
+    }
+
 
     # load data
     if(load) {
