@@ -12,10 +12,11 @@
 #'  * `"header"`: plot-level information.
 #'  * `"DT"`: a list of species and relative cover in each vegetation plot.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
+#'
 #' @param metadata If `TRUE` (the default), metadata will be downloaded.
 #' @param additional_data If `FALSE` (the default) additional data downloaded
 #'   from repository will be discarded.
-#'
+#' @param version The version of the dataset to be used. Either '1.0' or '2.0' (default).
 #' @return If `load = TRUE`, returns a named list containing the downloaded
 #'   tables as tibbles.
 #' @export
@@ -27,6 +28,7 @@
 #' }
 get_sPlot <- function(dir = "~/sPlotOpen/data",
                       tables = c("header", "DT", "CWM_CWV"),
+                      version = c("2.0"),
                       metadata = TRUE,
                       load = TRUE,
                       additional_data = FALSE) {
@@ -40,16 +42,21 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
   # check all required tables exist
   if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV'")
 
+  # check a valid version of the dataset is requested
+  if(!version %in% c("1.0", "2.0")) stop("Version should be '1.0' or '2.0'")
+
   # create directory
   if (!is.null(dir)) {
     if (stringr::str_sub(dir, -1) != "/") {
-      dir <- paste(dir, "/", sep = "")
+      dir_version <- paste(dir, "/", version, "/", sep = "")
     }
     if (!dir.exists(dir)) {
-      dir.create(dir, recursive = T)
-      message(paste("Creating directory:", dir))
+      dir_version <- file.path(dir, version)
+
+      dir.create(dir_version, recursive = T)
+      message(paste("Creating directory:", dir_version))
     }
-    message(paste0("Saving to ", dir))
+    message(paste0("Saving to ", dir_version ))
   }
 
   # give error message if no directory is specified and load = FALSE
@@ -59,10 +66,10 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 
   # check if tables exist
   if(!is.null(dir)) {
-    existing <- sapply(tables, function(i) any(stringr::str_detect(list.files(dir), i)))
+    existing <- sapply(tables, function(i) any(stringr::str_detect(list.files(dir_version), i)))
     if(any(existing)) {
       download <- readline(paste(paste(tables[existing], collapse = ", "),
-                                 "already exist in", dir, "\nDownload anyway? (y/n)"))
+                                 "already exist in", dir_version, "\nDownload anyway? (y/n)"))
       if(download == "y") {
         print("Downloading data")
       } else {
@@ -73,13 +80,20 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 
   # download zipped sPlotOpen data to temporary file
   temp <- tempfile()
-  url <- "https://idata.idiv.de/ddm/Data/DownloadZip/3474?version=5047"
+
+  # select dataset version
+  if(version == "2.0"){
+    url <- "https://idata.idiv.de/ddm/Data/DownloadZip/3474?version=5806"
+  } else if(version == "1.0"){
+    url <- "https://idata.idiv.de/ddm/Data/DownloadZip/3474?version=5047"
+  }
+
   utils::download.file(url, temp, mode = "wb")
 
   if (!is.null(dir)) {
 
     # extract to directory
-    utils::unzip(temp, exdir = stringr::str_sub(dir, 1, -2))
+    utils::unzip(temp, exdir = stringr::str_sub(dir_version, 1, -2))
     unlink(temp)
 
     # delete additional files
@@ -87,11 +101,11 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 
     if(!isTRUE(additional_data)){
 
-      files.to.remove <- list(list.files(dir, full.names = TRUE)[!grepl("header|DT|CWM_CWV",list.files(dir))])
+      files.to.remove <- list(list.files(dir_version, full.names = TRUE)[!grepl("header|DT|CWM_CWV",list.files(dir_version))])
 
       do.call(file.remove, files.to.remove)
 
-      directories.to.remove <- list.dirs(dir, full.names = TRUE, recursive = FALSE)
+      directories.to.remove <- list.dirs(dir_version, full.names = TRUE, recursive = FALSE)
 
       unlink(directories.to.remove, recursive = TRUE)
     }
@@ -100,9 +114,9 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     # load data
     if(load) {
       data <- list()
-      if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "DT")))
-      if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "header")), guess_max = 9999)
-      if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "CWM_CWV")))
+      if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "DT")))
+      if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "header")), guess_max = 9999)
+      if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
 
       return(data)
     }
@@ -142,15 +156,17 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
 #'  * `"DT"`: data on species composition of each plot in long format.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #'
+#' @param version The version of the dataset to be used. Either '1.0' or '2.0' (default).
 #' @return A named list containing sPlotOpen data tables as tibbles.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Load all sPlotOpen tables
-#' db <- read_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
+#' db <- read_sPlot(dir = "~/sPlotOpen/data/2.0", tables = c("DT", "header", "CWM_CWV"))
 #' }
 read_sPlot <- function(dir = "~/sPlotOpen/data",
+                       version = "2.0",
                        tables = c("header", "DT", "CWM_CWV")) {
 
   # check at least one existing table is required
@@ -159,13 +175,19 @@ read_sPlot <- function(dir = "~/sPlotOpen/data",
   # check all required tables exist
   if(length(setdiff(tables, c("DT", "header", "CWM_CWV"))) > 0) stop("tables should only include 'DT', 'header' or 'CWM_CWV'")
 
+  # check a valid version of the dataset is requested
+  if(!version %in% c("1.0", "2.0")) stop("Version should be '1.0' or '2.0'")
+
+  dir_version <- file.path(dir, version)
+
   # check data exists in the specified directory
-  if(!any(grepl("header|DT|CWM_CWV", list.files(dir)))) stop("There is no sPlotOpen files stored in this directory")
+  if(!any(grepl("header|DT|CWM_CWV", list.files(dir_version)))) stop("There is no sPlotOpen files stored in this directory")
+
 
   data <- list()
-  if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "DT")))
-  if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "header")), guess_max = 9999)
-  if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir, stringr::str_subset(list.files(dir), "CWM_CWV")))
+  if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "DT")))
+  if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "header")), guess_max = 9999)
+  if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
 
   return(data)
 }
