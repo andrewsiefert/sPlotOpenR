@@ -4,16 +4,10 @@
 \alias{read_sPlot}
 \title{Load sPlotOpen data into R}
 \usage{
-read_sPlot(
-  dir = "~/sPlotOpen/data",
-  version = "2.0",
-  tables = c("header", "DT", "CWM_CWV")
-)
+read_sPlot(dir = "~/sPlotOpen/data", tables = c("header", "DT", "CWM_CWV"))
 }
 \arguments{
 \item{dir}{Directory where sPlotOpen tables are stored.}
-
-\item{version}{The version of the dataset to be used. Either '1.0' or '2.0' (default).}
 
 \item{tables}{A character vector. Names of tables to load. Options are
 (default is to load all):
@@ -33,6 +27,6 @@ specify and, if present, loads them into R.
 \examples{
 \dontrun{
 # Load all sPlotOpen tables
-db <- read_sPlot(dir = "~/sPlotOpen/data/2.0", tables = c("DT", "header", "CWM_CWV"))
+db <- read_sPlot(dir = "~/sPlotOpen/data", tables = c("DT", "header", "CWM_CWV"))
 }
 }

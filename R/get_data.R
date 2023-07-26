@@ -12,7 +12,6 @@
 #'  * `"header"`: plot-level information.
 #'  * `"DT"`: a list of species and relative cover in each vegetation plot.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
-#' @param metadata If `TRUE` (the default), metadata will be downloaded.
 #'
 #' @return If `load = TRUE`, returns a named list containing the downloaded
 #'   tables as tibbles.
@@ -25,7 +24,6 @@
 #' }
 get_sPlot <- function(dir = "~/sPlotOpen/data",
                       tables = c("header", "DT", "CWM_CWV"),
-                      metadata = TRUE,
                       load = TRUE) {
 
   op <- options()
