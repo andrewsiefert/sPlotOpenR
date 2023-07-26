@@ -7,8 +7,10 @@
 get_sPlot(
   dir = "~/sPlotOpen/data",
   tables = c("header", "DT", "CWM_CWV"),
+  version = c("2.0"),
   metadata = TRUE,
-  load = TRUE
+  load = TRUE,
+  additional_data = FALSE
 )
 }
 \arguments{
@@ -24,9 +26,14 @@ are (default is to download all):
 \item \code{"CWM_CWV"}: community-weighted means and variances for 18 traits.
 }}
 
+\item{version}{The version of the dataset to be used. Either '1.0' or '2.0' (default).}
+
 \item{metadata}{If \code{TRUE} (the default), metadata will be downloaded.}
 
 \item{load}{If \code{TRUE} (the default), data will be loaded immediately into R.}
+
+\item{additional_data}{If \code{FALSE} (the default) additional data downloaded
+from repository will be discarded.}
 }
 \value{
 If \code{load = TRUE}, returns a named list containing the downloaded
