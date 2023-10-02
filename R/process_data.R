@@ -77,9 +77,11 @@ filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
 
   if(isTRUE(resolve)) {
 
+
     if(!("TNRS" %in% installed.packages())) stop("You need to have the package TNRS installed for performing the taxonomic resolution. Please install it before you set the argument resolve = TRUE.")
     spp_list_tmp <- TNRS::TNRS(spp_list,
                            sources = c("wfo", "tropicos", "wcvp"))[,c("Name_submitted", "Accepted_name")]
+
     if(nrow(dplyr::filter(spp_list_tmp, Name_submitted != Accepted_name))>0){
       #Strip x in case of hybrid species
       spp_list_tmp$Accepted_name <- sub(pattern=" x ", replacement=" ", x=spp_list_tmp$Accepted_name)

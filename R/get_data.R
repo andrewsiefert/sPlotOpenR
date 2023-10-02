@@ -13,9 +13,8 @@
 #'  * `"DT"`: a list of species and relative cover in each vegetation plot.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #'
-#' @param metadata If `TRUE` (the default), metadata will be downloaded.
-#' @param additional_data If `FALSE` (the default) additional data downloaded
-#'   from repository will be discarded.
+#' @param metadata If `TRUE` (the default) metadata will be downloaded.
+#' @param auxiliary_files If `FALSE` (the default) auxiliary files will be discarded after downloading.
 #' @param version The version of the dataset to be used. Either '1.0' or '2.0' (default).
 #' @return If `load = TRUE`, returns a named list containing the downloaded
 #'   tables as tibbles.
@@ -30,8 +29,8 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
                       tables = c("header", "DT", "CWM_CWV"),
                       version = c("2.0"),
                       metadata = TRUE,
-                      load = TRUE,
-                      additional_data = FALSE) {
+                      auxiliary_files = FALSE,
+                      load = TRUE) {
 
   op <- options()
   options(timeout = 3600)
