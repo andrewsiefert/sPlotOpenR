@@ -138,6 +138,10 @@ filter_polygon <- function(data, x, join = FALSE) {
   plots <- sf::st_as_sf(data$header, coords = c('Longitude', 'Latitude'),
                         crs = sf::st_crs(4326))
 
+  #check validity of supplied polygon
+  if(!isTRUE(is.character(x) | is.matrix(x) | grepl("POLYGON", st_geometry_type(x, by_geometry = FALSE))))
+    stop("Please supplly a valid polygon (shapefile, matrix or an sf object).")
+
   if(is.character(x)) {
     x <- sf::st_read(x)
   }
