@@ -13,8 +13,8 @@
 #'  * `"DT"`: a list of species and relative cover in each vegetation plot.
 #'  * `"CWM_CWV"`: community-weighted means and variances for 18 traits.
 #'
-#' @param metadata If `TRUE` (the default) metadata will be downloaded.
-#' @param auxiliary_files If `FALSE` (the default) auxiliary files will be discarded after downloading.
+#' @param metadata If `TRUE` (the default), metadata will be downloaded.
+#' @param auxiliary_files If `FALSE` (the default), auxiliary files will be discarded after downloading.
 #' @param version The version of the dataset to be used. Either '1.0' or '2.0' (default).
 #' @return If `load = TRUE`, returns a named list containing the downloaded
 #'   tables as tibbles.
@@ -50,8 +50,6 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
       dir_version <- paste(dir, "/", version, "/", sep = "")
     }
     if (!dir.exists(dir)) {
-      dir_version <- file.path(dir, version)
-
       dir.create(dir_version, recursive = T)
       message(paste("Creating directory:", dir_version))
     }
@@ -95,18 +93,31 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     utils::unzip(temp, exdir = stringr::str_sub(dir_version, 1, -2))
     unlink(temp)
 
-    # delete additional files
-    # keep only DT, header and CWM_CWV files
+    # delete auxiliary and metadata files
+    if(!isTRUE(auxiliary_files)){
 
-    if(!isTRUE(additional_data)){
+      #keep DT, header, CWM_CWV and metadata
+      if(isTRUE(metadata)){
+        directories.to.remove <- list.dirs(dir_version, full.names = TRUE, recursive = FALSE)
+        unlink(directories.to.remove, recursive = TRUE)
 
-      files.to.remove <- list(list.files(dir_version, full.names = TRUE)[!grepl("header|DT|CWM_CWV",list.files(dir_version))])
 
-      do.call(file.remove, files.to.remove)
+        files.to.remove <- list(list.files(dir_version, full.names = TRUE)[!grepl("header|DT|CWM_CWV|[Mm]etadata",list.files(dir_version))])
+        do.call(file.remove, files.to.remove)
 
-      directories.to.remove <- list.dirs(dir_version, full.names = TRUE, recursive = FALSE)
+      } else{
+        #keep only DT, header and CWM_CWV
+        directories.to.remove <- list.dirs(dir_version, full.names = TRUE, recursive = FALSE)
+        unlink(directories.to.remove, recursive = TRUE)
 
-      unlink(directories.to.remove, recursive = TRUE)
+
+        files.to.remove <- list(list.files(dir_version, full.names = TRUE)[!grepl("header|DT|CWM_CWV",list.files(dir_version))])
+        do.call(file.remove, files.to.remove)
+
+      }
+
+
+
     }
 
 
