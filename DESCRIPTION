@@ -1,9 +1,10 @@
 Package: sPlotOpenR
 Title: Work with the sPlotOpen Vegetation Plot Database 
 Version: 0.0.0.9000
-Authors@R: 
-    person("Andrew", "Siefert", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Authors@R: c(
+    person("Andrew", "Siefert", , "ANDREW'S EMAIL", role = c("aut"), comment = c(ORCID = "0000-0002-2704-1625")),
+    person("Gabriella", "Damasceno", "gabriella.damasceno@idiv.de", role = "cre", comment = c(ORCID = "0000-0001-5103-484X")),
+    person("Francesco", "Sabatini", "francescomaria.sabatini@unibo.it", role = "crt", comment = c(ORCID = "0000-0002-7202-7697")))
 Description: Functions to make it easier to load, process, and visualize vegetation plot data in the sPlotOpen database.
 License: MIT + file LICENSE
 Encoding: UTF-8
