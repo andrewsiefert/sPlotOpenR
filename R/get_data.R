@@ -126,7 +126,7 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
       data <- list()
       if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "DT")))
       if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "header")), guess_max = 9999)
-      if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
+      if("CWM_CWV" %in% tables) data$CWM_CWV <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
 
       return(data)
     }
@@ -142,7 +142,7 @@ get_sPlot <- function(dir = "~/sPlotOpen/data",
     data <- list()
     if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "DT")))
     if("header" %in% tables) data$header <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "header")), guess_max = 9999)
-    if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "CWM_CWV")))
+    if("CWM_CWV" %in% tables) data$CWM_CWV <- readr::read_tsv(file.path(tempDir, stringr::str_subset(list.files(tempDir), "CWM_CWV")))
     return(data)
 
     # delete temporary directory
@@ -197,7 +197,7 @@ read_sPlot <- function(dir = "~/sPlotOpen/data",
   data <- list()
   if("DT" %in% tables) data$DT <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "DT")))
   if("header" %in% tables) data$header <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "header")), guess_max = 9999)
-  if("CWM_CWV" %in% tables) data$CWM_CVM <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
+  if("CWM_CWV" %in% tables) data$CWM_CWV <- readr::read_tsv(file.path(dir_version, stringr::str_subset(list.files(dir_version), "CWM_CWV")))
 
   return(data)
 }
