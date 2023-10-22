@@ -139,7 +139,7 @@ filter_polygon <- function(data, x, join = FALSE) {
                         crs = sf::st_crs(4326))
 
   #check validity of supplied polygon
-  if(!isTRUE(is.character(x) | is.matrix(x) | grepl("POLYGON", sf::st_geometry_type(x, by_geometry = FALSE))))
+  if(!isTRUE(is.character(x) | is.matrix(x) | grepl("POLYGON", try(sf::st_geometry_type(x, by_geometry = FALSE), silent = T))))
     stop("Please supplly a valid polygon (shapefile, matrix or an sf object).")
 
   if(is.character(x)) {
