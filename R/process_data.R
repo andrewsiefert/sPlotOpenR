@@ -63,7 +63,7 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 #'
 #' @return sPlotOpen data filtered to include only plots that contain at least
 #'   one species in `spp_list`. If `join = FALSE`, a list containing the
-#'   filtered `DT` and `header` tables. If `join = TRUE`, a single data from
+#'   filtered `DT`, `header`, and (if applicable) `CWM_CWV` tables. If `join = TRUE`, a single data from
 #'   containing the joined tables.
 #'
 #' @export
@@ -76,8 +76,12 @@ site_by_species <- function(data, sparse = FALSE, pres_abs = FALSE) {
 filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
 
   if(isTRUE(resolve)) {
+
+
+    if(!("TNRS" %in% installed.packages())) stop("You need to have the package TNRS installed for performing the taxonomic resolution. Please install it before you set the argument resolve = TRUE.")
     spp_list_tmp <- TNRS::TNRS(spp_list,
                            sources = c("wfo", "tropicos", "wcvp"))[,c("Name_submitted", "Accepted_name")]
+
     if(nrow(dplyr::filter(spp_list_tmp, Name_submitted != Accepted_name))>0){
       #Strip x in case of hybrid species
       spp_list_tmp$Accepted_name <- sub(pattern=" x ", replacement=" ", x=spp_list_tmp$Accepted_name)
@@ -98,11 +102,26 @@ filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
   header_filtered <- dplyr::inner_join(data$header, plots_w_spp)
   DT_filtered <- dplyr::semi_join(data$DT, header_filtered)
 
-  if(isTRUE(join)) {
-    return(dplyr::inner_join(DT_filtered, header_filtered))
-  } else {
-    return(list(DT = DT_filtered, header = header_filtered))
+  if(!is.null(data$CWM_CWV)) {
+    CWM_CWV_filtered <- dplyr::inner_join(plots_w_spp, data$CWM_CWV)
   }
+
+  if(isTRUE(join)) {
+    if(is.null(data$CWM_CWV)) {
+      out <- dplyr::inner_join(DT_filtered, header_filtered)
+    } else {
+      out <- dplyr::inner_join(DT_filtered, header_filtered) |>
+        dplyr::inner_join(CWM_CWV_filtered)
+    }
+  } else {
+    if(is.null(data$CWM_CWV)) {
+      out <- list(DT = DT_filtered, header = header_filtered)
+    } else {
+      out <- list(DT = DT_filtered, header = header_filtered, CWM_CWV = CWM_CWV_filtered)
+    }
+  }
+
+  return(out)
 }
 
 
@@ -116,7 +135,7 @@ filter_species <- function(data, spp_list, resolve = FALSE, join = FALSE) {
 #'  (longitude, latitude) in rows.
 #'
 #'@return sPlotOpen data filtered to include only plots that intersect with `x`.
-#'  If `join = F`, a list containing the filtered `DT` and `header` tables. If
+#'  If `join = F`, a list containing the filtered `DT`, `header`, and (if applicable) `CWM_CWV` tables. If
 #'  `join = T`, a single data from containing the joined tables.
 #'@export
 #'
@@ -133,6 +152,10 @@ filter_polygon <- function(data, x, join = FALSE) {
 
   plots <- sf::st_as_sf(data$header, coords = c('Longitude', 'Latitude'),
                         crs = sf::st_crs(4326))
+
+  #check validity of supplied polygon
+  if(!isTRUE(is.character(x) | is.matrix(x) | grepl("POLYGON", try(sf::st_geometry_type(x, by_geometry = FALSE), silent = T))))
+    stop("Please supplly a valid polygon (shapefile, matrix or an sf object).")
 
   if(is.character(x)) {
     x <- sf::st_read(x)
@@ -156,10 +179,23 @@ filter_polygon <- function(data, x, join = FALSE) {
 
   DT_filtered <- dplyr::semi_join(data$DT, header_filtered)
 
+  if(!is.null(data$CWM_CWV)) {
+    CWM_CWV_filtered <- dplyr::semi_join(data$CWM_CWV, header_filtered)
+  }
+
   if(isTRUE(join)) {
-    return(dplyr::inner_join(DT_filtered, header_filtered))
+    if(is.null(data$CWM_CWV)) {
+      out <- dplyr::inner_join(DT_filtered, header_filtered)
+    } else {
+      out <- dplyr::inner_join(DT_filtered, header_filtered) |>
+        dplyr::inner_join(CWM_CWV_filtered)
+    }
   } else {
-    return(list(DT = DT_filtered, header = header_filtered))
+    if(is.null(data$CWM_CWV)) {
+      out <- list(DT = DT_filtered, header = header_filtered)
+    } else {
+      out <- list(DT = DT_filtered, header = header_filtered, CWM_CWV = CWM_CWV_filtered)
+    }
   }
 }
 
