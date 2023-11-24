@@ -74,10 +74,15 @@ map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
     brk <- 0:max(ceiling(grid$value))
     lbl <- c("1", "10", "100", "1,000", "10,000")[1:length(brk)]
 
+    if(nrow(grid) == 1) {
+      brk <- grid$value
+      lbl <- 10^brk
+    }
+
     ## Prepare plotting
-    map_out <- base +
+    map_out <-  base +
       ggplot2::geom_sf(data = grid, ggplot2::aes(fill = value), color = NA, alpha=0.9)    +
-      viridis::scale_fill_viridis(breaks = brk, labels = lbl) +
+      viridis::scale_fill_viridis(limits=c(0, max(brk)), breaks = brk, labels = lbl) +
       ggplot2::labs(fill = "# plots")
 
     } else if(type == "points") {
