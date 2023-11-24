@@ -35,7 +35,7 @@ map_plots <- function(data, type = "grid", grid_size = 300, extent="world") {
   countries <- sf::st_read(cpath)
 
   bpath <- system.file("extdata", "ne_bb.shp", package = "sPlotOpenR")
-  bb <- sf::st_read(cpath)
+  bb <- sf::st_read(bpath)
 
 
   base <- ggplot2::ggplot() +
