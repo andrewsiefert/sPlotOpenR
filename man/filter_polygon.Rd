@@ -18,7 +18,7 @@ tables.}
 }
 \value{
 sPlotOpen data filtered to include only plots that intersect with \code{x}.
-If \code{join = F}, a list containing the filtered \code{DT} and \code{header} tables. If
+If \code{join = F}, a list containing the filtered \code{DT}, \code{header}, and (if applicable) \code{CWM_CWV} tables. If
 \code{join = T}, a single data from containing the joined tables.
 }
 \description{

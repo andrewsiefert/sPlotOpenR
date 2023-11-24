@@ -199,3 +199,57 @@ filter_polygon <- function(data, x, join = FALSE) {
   }
 }
 
+
+
+#'Filter sPlotOpen Data by positional index
+#'
+#'`filter_index()` creates a subset of sPlotOpen data, retaining
+#'plots based on a list of positional indices you specify.
+#'
+#'@inheritParams filter_species
+#'@param x A vector of positional indices corresponding to the ordered number of plots in sPlotOpen to subset
+#'
+#'@return sPlotOpen data sliced to include only plots at position `x`.
+#'  If `join = F`, a list containing the sliced `DT`, `header`, and (if applicable) `CWM_CWV` tables. If
+#'  `join = T`, a single data from containing the joined tables.
+#'@export
+#'
+#' @examples
+#' data(greece)
+#'
+#'# create a vector of positional indices used to slice sPlotOpen
+#' mylist <- c(sample(1:nrow(greece$header), 5, replace = FALSE))
+#'
+#' # filter dataset to only include points within the polygon
+#' filter_index(greece, mylist, join = FALSE)
+filter_index <- function(data, x, join = FALSE) {
+
+  header_filtered <- data$header[x,]
+
+  DT_filtered <- dplyr::semi_join(data$DT, header_filtered)
+
+  if(!is.null(data$CWM_CWV)) {
+    CWM_CWV_filtered <- dplyr::semi_join(data$CWM_CWV, header_filtered)
+  }
+
+  if(isTRUE(join)) {
+    if(is.null(data$CWM_CWV)) {
+      out <- dplyr::inner_join(DT_filtered, header_filtered)
+    } else {
+      out <- dplyr::inner_join(DT_filtered, header_filtered) |>
+        dplyr::inner_join(CWM_CWV_filtered)
+    }
+  } else {
+    if(is.null(data$CWM_CWV)) {
+      out <- list(DT = DT_filtered, header = header_filtered)
+    } else {
+      out <- list(DT = DT_filtered, header = header_filtered, CWM_CWV = CWM_CWV_filtered)
+    }
+  }
+  return(out)
+}
+
+
+
+
+
